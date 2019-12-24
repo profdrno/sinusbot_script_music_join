@@ -19,7 +19,7 @@ registerPlugin({
 		},
 		{
 			name: "time",
-			title: "Duration",
+			title: "Duration (ms)",
 			type: "number",
 			placeholder: 0
 		}]
@@ -36,20 +36,20 @@ registerPlugin({
 			if (item.clientID === mi.client.uid()) {
 				if (mi.toChannel.id() === backend.getCurrentChannel().id()) {
 					media.playURL(item.track.url);
-					stopPlaying(item.time, item.track.url);
+					if (item.time > 0 && item.time < media.getCurrentTrack().duration()) {
+						stopPlaying(item.time, item.track.url);
+					}
 				}
 			}
 		});
 	});
 	
 	function stopPlaying (time, track) {
-		if (time > 0) {
-			setTimeout(function() {
-				let id = track.split("/");
-				if (media.getCurrentTrack().id() === id[2] && time < media.getCurrentTrack().duration()) {
-					media.stop(id[2]);
-				}
-			}, time);
-		}
+		setTimeout(function() {
+			let id = track.split("/");
+			if (media.getCurrentTrack().id() === id[2]) {
+				media.stop(id[2]);
+			}
+		}, time);
 	}	
 });
